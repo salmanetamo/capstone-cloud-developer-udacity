@@ -1,0 +1,72 @@
+<div class="flex flex-col items-center">
+  <div>
+    <p class="text-5xl">
+      {{ isEditForm ? 'Edit diary entry' : 'Create a new diary entry' }}
+    </p>
+  </div>
+  <form class="w-full max-w-4xl" #form="ngForm" (ngSubmit)="submit()">
+    <div class="mb-3 pt-0 w-full">
+      <label class="block">
+        <span class="text-gray-700">Title</span>
+        <input class="px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none focus:ring w-full"
+               placeholder="Crazy day!"
+               type="text"
+               name="title"
+               required
+               [(ngModel)]="titleField"
+               #title="ngModel"
+               minlength="8"
+        />
+      </label>
+      <div *ngIf="title.invalid && (title.dirty || title.touched)" class="mt-4">
+        <div *ngIf="title.errors?.['required']" class="text-red-700 text-sm">
+          Title is required.
+        </div>
+        <div *ngIf="title.errors?.['minlength']" class="text-red-700 text-sm">
+          Title must be at least 8 characters long.
+        </div>
+      </div>
+    </div>
+    <div class="w-full">
+      <label class="block text-left">
+        <span class="text-gray-700">Description</span>
+        <textarea
+          class="form-textarea mt-1 block px-2 py-1 placeholder-gray-400 text-gray-600 relative bg-white bg-white rounded text-sm border border-gray-400 outline-none focus:outline-none focus:ring w-full"
+          rows="8"
+          placeholder="I had a lot fun doing ..."
+          required
+          minlength="16"
+          [(ngModel)]="descriptionField"
+          name="description"
+          #description="ngModel"
+        ></textarea>
+      </label>
+      <div *ngIf="description.invalid && (description.dirty || description.touched)" class="mt-4">
+        <div *ngIf="description.errors?.['required']" class="text-red-700 text-sm">
+          Description is required.
+        </div>
+        <div *ngIf="description.errors?.['minlength']" class="text-red-700 text-sm">
+          Description must be at least 16 characters long.
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 flex justify-between">
+      <button
+        class="border-2 border-black active:text-white active:bg-black disabled:bg-gray-300 disabled:text-gray-700 font-bold uppercase text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+        type="submit"
+        [disabled]="!form.form.valid"
+      >
+        Submit
+      </button>
+      <button
+        class="font-bold uppercase text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+        type="button"
+        (click)="cancel()"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+
+</div>

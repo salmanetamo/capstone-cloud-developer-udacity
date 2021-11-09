@@ -1,0 +1,20 @@
+<app-login></app-login>
+<div *ngIf="auth.isAuthenticated$ | async; else loggedOut">
+  <router-outlet></router-outlet>
+</div>
+
+<ng-template #loggedOut>
+  <div class="flex flex-col justify-evenly items-center w-full mt-32">
+    <div>
+      <p class="text-4xl text-center">
+        Login to access your diaries
+      </p>
+    </div>
+    <div class="mt-16">
+      <img class="inset-0 w-96 h-auto object-cover object-center" [src]="'/assets/images/login.png'" alt="Alt"/>
+    </div>
+  </div>
+</ng-template>
+
+
+

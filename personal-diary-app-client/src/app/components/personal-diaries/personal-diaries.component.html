@@ -1,0 +1,116 @@
+<div *ngIf="loading; else diaryEntriesList">
+  <app-loader></app-loader>
+</div>
+<ng-template #diaryEntriesList>
+  <div *ngIf="!showCreateDiaryEntryForm && !showEditDiaryEntryForm && !showUploadAttachmentForm">
+    <div class="flex mx-8" *ngIf="diaryEntries && diaryEntries.length > 0">
+      <div class="w-2/5 mx-auto flex flex-col">
+        <div *ngFor="let diaryEntry of diaryEntries" class="flex flex-col md:flex-row overflow-hidden bg-white rounded-lg shadow-xl mt-4 w-100 mx-2 cursor-pointer" (click)="setSelectedDiary(diaryEntry)">
+          <div class="h-32 w-auto md:w-1/2">
+            <img class="inset-0 h-full w-full object-cover object-center" [src]="diaryEntry.attachmentUrl" alt="Alt"/>
+          </div>
+          <div class="w-full py-4 px-6 text-gray-800 flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between">
+                <div>
+                  <h3 class="font-semibold text-lg leading-tight truncate">
+                    {{ diaryEntry.title.length > 50 ? diaryEntry.title.substr(0, 50) + '...' : diaryEntry.title }}
+                  </h3>
+                </div>
+                <div class="flex space-x-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" (click)="toggleShowUploadAttachmentForm(diaryEntry)">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" (click)="toggleShowEditDiaryEntryForm(diaryEntry)">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor" (click)="deleteDiaryEntry(diaryEntry.diaryEntryId)">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                </div>
+              </div>
+
+              <div>
+                <p class="mt-2">
+                  {{ diaryEntry.description.length > 50 ? diaryEntry.description.substr(0, 50) + '...' : diaryEntry.description }}
+                </p>
+              </div>
+            </div>
+            <div>
+              <p class="text-xs text-gray-400 font-semibold mt-2">
+                Created on: {{ diaryEntry.createdAt | date}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-3/5 container grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-1 gap-5 mt-4" *ngIf="selectedDiary">
+        <div class="rounded overflow-hidden shadow-lg">
+          <img class="w-full" [src]="selectedDiary.attachmentUrl" alt="Forest">
+          <div class="px-6 py-4">
+            <div class="font-bold text-xl mb-2">
+              {{ selectedDiary.title }}
+            </div>
+            <p class="text-gray-700 text-base">
+              {{ selectedDiary.description }}
+            </p>
+          </div>
+          <div class="px-6 pt-4 pb-2 flex justify-between">
+            <div>
+              <p class="text-sm text-gray-400 font-semibold mt-2">
+                Created at: {{ selectedDiary.createdAt | date: 'medium'}}
+              </p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-400 font-semibold mt-2">
+                Last updated at: {{ selectedDiary.updatedAt | date: 'medium'}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col justify-evenly items-center w-full mt-32" *ngIf="!diaryEntries || diaryEntries.length <= 0">
+      <div>
+        <p class="text-4xl text-center">
+          You don't have any diary entries yet!<br>Add some!
+        </p>
+      </div>
+      <div class="mt-16">
+        <img class="inset-0 w-96 h-auto object-cover object-center" [src]="'/assets/images/no_entries.jpg'" alt="Alt"/>
+      </div>
+    </div>
+  </div>
+
+  <div class="fixed bottom-8 right-8 cursor-pointer" *ngIf="!showCreateDiaryEntryForm" (click)="toggleShowCreateDiaryEntryForm()">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+    </svg>
+  </div>
+
+  <app-create-diary-entry *ngIf="showCreateDiaryEntryForm"
+                          (diaryEntryCreatedOrUpdated)="createDiaryEntry($event)"
+                          [isEditForm]="false"
+                          (cancelled)="hideForms()">
+  </app-create-diary-entry>
+
+  <app-create-diary-entry *ngIf="showEditDiaryEntryForm"
+                          (diaryEntryCreatedOrUpdated)="updateDiaryEntry(selectedDiary?.diaryEntryId ?? '', $event)"
+                          [isEditForm]="true"
+                          [entryToUpdate]="getDiaryEntryToUpdateRequest()"
+                          (cancelled)="hideForms()">
+  </app-create-diary-entry>
+
+  <app-upload-diary-item-attachment *ngIf="showUploadAttachmentForm"
+                                    [diaryEntry]="selectedDiary"
+                                    (cancelled)="hideForms()"
+                                    (fileUploaded)="uploadAttachment(selectedDiary?.diaryEntryId ?? '', $event)">
+  </app-upload-diary-item-attachment>
+</ng-template>
+

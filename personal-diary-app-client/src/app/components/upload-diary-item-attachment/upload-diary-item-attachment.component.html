@@ -1,0 +1,35 @@
+<div class="flex flex-col items-center">
+  <div>
+    <p class="text-5xl">
+      Upload an image
+    </p>
+  </div>
+  <div class="w-full max-w-4xl">
+    <div class="mb-3 pt-0 w-full">
+      <input type="file" class="file-input hidden"
+             (change)="onFileSelected($event)" #fileUpload>
+
+      <div class="file-upload">
+
+        {{ fileName || "No file uploaded yet."}}
+
+        <button class="upload-btn"
+                (click)="fileUpload.click()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="mt-4">
+      <button
+        class="font-bold uppercase text-base px-8 py-3 rounded shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+        type="button"
+        (click)="cancel()"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+
+</div>
